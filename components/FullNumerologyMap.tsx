@@ -304,8 +304,8 @@ const FullNumerologyMap: React.FC<FullNumerologyMapProps> = ({ fullName, birthDa
   return (
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Sidebar Navigation - Responsive */}
-      <div className="w-full lg:w-64 flex-shrink-0">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden sticky lg:top-24">
+      <div className="w-full lg:w-64 flex-shrink-0 sticky top-16 z-40 lg:static lg:z-auto">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden lg:sticky lg:top-24">
           <div className="hidden lg:block p-4 bg-gray-50 border-b border-gray-200">
             <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Estudos</h4>
           </div>

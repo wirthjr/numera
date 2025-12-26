@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import PyramidVisualizer from './components/PyramidVisualizer';
 import ArcanoResult from './components/ArcanoResult';
@@ -21,6 +21,10 @@ const App: React.FC = () => {
   const [calculatedLayers, setCalculatedLayers] = useState<number[][]>([]);
   const [calculatedName, setCalculatedName] = useState('');
   const [negativeSequences, setNegativeSequences] = useState<NegativeSequence[]>([]);
+
+  // Refs for auto-scrolling nav
+  const navRef = useRef<HTMLElement>(null);
+  const activeTabRef = useRef<HTMLButtonElement>(null);
 
   const handleCalculatePyramid = () => {
     if (!inputName.trim()) return;
@@ -48,6 +52,24 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // Auto-scroll mobile nav to active item
+  useEffect(() => {
+    if (activeTabRef.current && navRef.current) {
+      const nav = navRef.current;
+      const active = activeTabRef.current;
+      
+      const navWidth = nav.offsetWidth;
+      const activeLeft = active.offsetLeft;
+      const activeWidth = active.offsetWidth;
+      
+      // Center the active item
+      nav.scrollTo({
+        left: activeLeft - (navWidth / 2) + (activeWidth / 2),
+        behavior: 'smooth'
+      });
+    }
+  }, [activeTab]);
+
   const getBaseNumber = (): number | null => {
     if (calculatedLayers.length === 0) return null;
     const lastLayer = calculatedLayers[calculatedLayers.length - 1];
@@ -66,7 +88,7 @@ const App: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-900 pb-24 lg:pb-10">
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-900 pb-28 lg:pb-10">
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -232,16 +254,23 @@ const App: React.FC = () => {
       </main>
 
       {/* Mobile Bottom Navigation (Fixed Footer) */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 lg:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe">
-        <nav className="flex items-center justify-between px-2 py-2 overflow-x-auto hide-scrollbar">
+      <div 
+        className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 z-50 lg:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <nav 
+          ref={navRef}
+          className="flex items-center gap-1 px-2 py-2 overflow-x-auto hide-scrollbar"
+        >
            {navItems.map(item => (
               <button 
                 key={item.id}
+                ref={activeTab === item.id ? activeTabRef : null}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex flex-col items-center justify-center min-w-[4rem] px-2 py-1 rounded-lg transition-all active:scale-95 ${activeTab === item.id ? 'text-mystic-600' : 'text-gray-400 hover:text-gray-600'}`}
+                className={`flex flex-col items-center justify-center min-w-[4.5rem] flex-shrink-0 px-1 py-1 rounded-lg transition-all active:scale-95 ${activeTab === item.id ? 'text-mystic-600' : 'text-gray-400 hover:text-gray-600'}`}
               >
                 <div className={`p-1.5 rounded-full mb-1 transition-colors ${activeTab === item.id ? 'bg-mystic-100' : 'bg-transparent'}`}>
-                   <item.icon size={20} className={activeTab === CalculationTab.PYRAMID && item.id === CalculationTab.PYRAMID ? "fill-current" : ""} />
+                   <item.icon size={22} className={activeTab === CalculationTab.PYRAMID && item.id === CalculationTab.PYRAMID ? "fill-current" : ""} />
                 </div>
                 <span className={`text-[10px] font-medium truncate max-w-full ${activeTab === item.id ? 'font-bold' : ''}`}>{item.label}</span>
               </button>
