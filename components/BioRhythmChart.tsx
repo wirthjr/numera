@@ -53,8 +53,8 @@ const BioRhythmChart: React.FC<BioRhythmChartProps> = ({ birthDate }) => {
           >
             <defs>
               <linearGradient id="colorPy" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#ec7000" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#ec7000" stopOpacity={0}/>
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
@@ -66,13 +66,13 @@ const BioRhythmChart: React.FC<BioRhythmChartProps> = ({ birthDate }) => {
                 `Ano Pessoal ${value}`, 
                 props.payload.phase
               ]}
-              labelStyle={{ color: '#4b5563', fontWeight: 'bold' }}
+              labelStyle={{ color: '#c2410c', fontWeight: 'bold' }}
             />
             <ReferenceLine x={currentYear} stroke="#f59e0b" strokeDasharray="3 3" label={{ position: 'top', value: 'Hoje', fill: '#f59e0b', fontSize: 10 }} />
             <Area 
               type="monotone" 
               dataKey="personalYear" 
-              stroke="#8b5cf6" 
+              stroke="#ec7000" 
               strokeWidth={3}
               fillOpacity={1} 
               fill="url(#colorPy)" 

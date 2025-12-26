@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { getArcanoInfo } from '../data/arcanos';
-import { Share2, Check, Clock, Crown, ArrowRight } from 'lucide-react';
+import { Share2, Check } from 'lucide-react';
 import { NegativeSequence } from '../types';
 import { calculateLifeCycles } from '../utils/numerology';
 
@@ -9,6 +9,20 @@ interface PyramidVisualizerProps {
   originalName: string;
   negativeSequences: NegativeSequence[];
 }
+
+// Distinct colors for up to 10 cycles (repeats if name is longer)
+const CYCLE_PALETTE = [
+  { name: 'Blue', bg: 'bg-blue-100', border: 'border-blue-200', text: 'text-blue-800', light: 'bg-blue-50', ring: 'focus:ring-blue-500' },
+  { name: 'Emerald', bg: 'bg-emerald-100', border: 'border-emerald-200', text: 'text-emerald-800', light: 'bg-emerald-50', ring: 'focus:ring-emerald-500' },
+  { name: 'Amber', bg: 'bg-amber-100', border: 'border-amber-200', text: 'text-amber-800', light: 'bg-amber-50', ring: 'focus:ring-amber-500' },
+  { name: 'Rose', bg: 'bg-rose-100', border: 'border-rose-200', text: 'text-rose-800', light: 'bg-rose-50', ring: 'focus:ring-rose-500' },
+  { name: 'Violet', bg: 'bg-violet-100', border: 'border-violet-200', text: 'text-violet-800', light: 'bg-violet-50', ring: 'focus:ring-violet-500' },
+  { name: 'Cyan', bg: 'bg-cyan-100', border: 'border-cyan-200', text: 'text-cyan-800', light: 'bg-cyan-50', ring: 'focus:ring-cyan-500' },
+  { name: 'Fuchsia', bg: 'bg-fuchsia-100', border: 'border-fuchsia-200', text: 'text-fuchsia-800', light: 'bg-fuchsia-50', ring: 'focus:ring-fuchsia-500' },
+  { name: 'Lime', bg: 'bg-lime-100', border: 'border-lime-200', text: 'text-lime-800', light: 'bg-lime-50', ring: 'focus:ring-lime-500' },
+  { name: 'Indigo', bg: 'bg-indigo-100', border: 'border-indigo-200', text: 'text-indigo-800', light: 'bg-indigo-50', ring: 'focus:ring-indigo-500' },
+  { name: 'Orange', bg: 'bg-orange-100', border: 'border-orange-200', text: 'text-orange-800', light: 'bg-orange-50', ring: 'focus:ring-orange-500' },
+];
 
 const PyramidVisualizer: React.FC<PyramidVisualizerProps> = ({ layers, originalName, negativeSequences }) => {
   const [copied, setCopied] = useState(false);
@@ -86,26 +100,32 @@ const PyramidVisualizer: React.FC<PyramidVisualizerProps> = ({ layers, originalN
             
             {/* Cycle Age Markers (Above Letters) */}
             <div className="flex space-x-1 mb-1">
-              {cleanName.split('').map((_, idx) => (
-                <div 
-                  key={`age-${idx}`}
-                  className="w-8 md:w-10 text-[10px] md:text-xs text-gray-400 font-medium text-center"
-                >
-                  {(idx + 1) * 9}
-                </div>
-              ))}
+              {cleanName.split('').map((_, idx) => {
+                const colorTheme = CYCLE_PALETTE[idx % CYCLE_PALETTE.length];
+                return (
+                  <div 
+                    key={`age-${idx}`}
+                    className={`w-8 md:w-10 text-[10px] md:text-xs font-bold text-center ${colorTheme.text}`}
+                  >
+                    {(idx + 1) * 9}
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Render Original Letters */}
+            {/* Render Original Letters (Colored by Cycle) */}
             <div className="flex space-x-1 mb-2">
-              {cleanName.split('').map((char, idx) => (
-                <div 
-                  key={`char-${idx}`}
-                  className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-gray-100 text-gray-700 font-bold rounded shadow-sm border border-gray-200 text-sm md:text-base cursor-default select-none"
-                >
-                  {char}
-                </div>
-              ))}
+              {cleanName.split('').map((char, idx) => {
+                const colorTheme = CYCLE_PALETTE[idx % CYCLE_PALETTE.length];
+                return (
+                  <div 
+                    key={`char-${idx}`}
+                    className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center font-bold rounded shadow-sm border text-sm md:text-base cursor-default select-none ${colorTheme.bg} ${colorTheme.text} ${colorTheme.border}`}
+                  >
+                    {char}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Render Pyramid Layers */}
@@ -129,9 +149,11 @@ const PyramidVisualizer: React.FC<PyramidVisualizerProps> = ({ layers, originalN
                     textColor = 'text-white';
                     borderColor = 'border-gold-600';
                   } else if (layerIdx === 0) {
-                    bgColor = 'bg-mystic-100';
-                    textColor = 'text-mystic-800';
-                    borderColor = 'border-mystic-200';
+                    // Top Layer matches the cycle colors of the letters above
+                    const colorTheme = CYCLE_PALETTE[numIdx % CYCLE_PALETTE.length];
+                    bgColor = colorTheme.light; // Lighter background for numbers
+                    textColor = colorTheme.text;
+                    borderColor = colorTheme.border;
                   } else {
                     bgColor = 'bg-mystic-500';
                     textColor = 'text-white';
@@ -161,9 +183,6 @@ const PyramidVisualizer: React.FC<PyramidVisualizerProps> = ({ layers, originalN
                         <div className="text-gray-300 leading-tight">
                           <span className="font-semibold text-gray-400">Atributo:</span> {arcano.atributo}
                         </div>
-                        
-                        {/* Triangle/Arrow */}
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
                       </div>
                     </div>
                   );
@@ -172,73 +191,24 @@ const PyramidVisualizer: React.FC<PyramidVisualizerProps> = ({ layers, originalN
             ))}
           </div>
         </div>
-        
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4 text-xs text-gray-400 mt-2">
-          <span>Passe o mouse sobre os números para ver os Arcanos.</span>
-          {negativeSequences.length > 0 && (
-            <span className="flex items-center gap-1 text-red-500 font-semibold">
-              <span className="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
-              Sequências Negativas Detectadas
-            </span>
-          )}
-        </div>
       </div>
-
-      {/* 2. Life Cycles Section */}
-      <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-        <div className="flex items-center gap-2 mb-6">
-          <Clock className="text-mystic-600" size={20} />
-          <h3 className="text-lg font-bold text-gray-900">Ciclos de Vida (9 Anos)</h3>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {lifeCycles.map((cycle, idx) => {
-            const arcano = getArcanoInfo(cycle.rulerNumber);
-            return (
-              <div key={`cycle-${idx}`} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col hover:border-mystic-300 transition-colors">
-                
-                {/* Header: Cycle & Arcano Side-by-Side */}
-                <div className="flex justify-between items-start border-b border-gray-50 pb-2 mb-2">
-                  <div className="text-left">
-                    <div className="text-xs font-bold text-gray-900 uppercase tracking-wider">Ciclo {cycle.cycleIndex}</div>
-                    <div className="text-[10px] text-gray-400 font-medium">{cycle.startAge} - {cycle.endAge} anos</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center justify-end gap-1 text-xs font-bold text-mystic-700">
-                      <Crown size={12} className="text-gold-500" />
-                      <span>{arcano.nome}</span>
-                    </div>
-                    <div className="text-[10px] text-gray-500">Arcanjo {arcano.arcanjo}</div>
-                  </div>
-                </div>
-                
-                {/* Body: Regentes */}
-                <div className="flex items-center justify-center gap-3 mb-3 bg-gray-50 rounded py-2">
-                   <div className="flex flex-col items-center">
-                     <span className="text-[9px] text-gray-400 uppercase font-bold">Letra</span>
-                     <div className="w-6 h-6 rounded-full bg-white border border-gray-200 text-gray-700 flex items-center justify-center font-bold text-xs">
-                       {cycle.rulerChar}
-                     </div>
-                   </div>
-                   <ArrowRight size={12} className="text-gray-300" />
-                   <div className="flex flex-col items-center">
-                     <span className="text-[9px] text-gray-400 uppercase font-bold">Num</span>
-                     <div className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-bold text-xs">
-                       {cycle.rulerNumber}
-                     </div>
-                   </div>
-                </div>
-
-                <p className="text-[10px] text-gray-500 leading-tight text-center mt-auto">
-                  {cycle.meaning}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-        <p className="text-center text-xs text-gray-400 mt-4 italic">
-          * Os números acima das letras na pirâmide indicam a idade de término de cada ciclo.
-        </p>
+      
+       {/* 2. Cycle Information Section */}
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {lifeCycles.map((cycle) => (
+          <div key={cycle.cycleIndex} className={`p-4 rounded-xl border ${CYCLE_PALETTE[(cycle.cycleIndex - 1) % CYCLE_PALETTE.length].bg} ${CYCLE_PALETTE[(cycle.cycleIndex - 1) % CYCLE_PALETTE.length].border}`}>
+            <div className="flex justify-between items-start mb-2">
+              <span className={`text-xs font-bold px-2 py-1 rounded bg-white/50 ${CYCLE_PALETTE[(cycle.cycleIndex - 1) % CYCLE_PALETTE.length].text}`}>
+                {cycle.startAge} - {cycle.endAge} anos
+              </span>
+              <span className={`text-2xl font-bold ${CYCLE_PALETTE[(cycle.cycleIndex - 1) % CYCLE_PALETTE.length].text}`}>
+                {cycle.rulerNumber}
+              </span>
+            </div>
+            <h4 className={`font-bold mb-1 ${CYCLE_PALETTE[(cycle.cycleIndex - 1) % CYCLE_PALETTE.length].text}`}>Ciclo {cycle.cycleIndex}</h4>
+            <p className="text-xs text-gray-700">{cycle.meaning}</p>
+          </div>
+        ))}
       </div>
 
     </div>
