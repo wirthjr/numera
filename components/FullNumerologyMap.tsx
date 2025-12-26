@@ -294,49 +294,40 @@ const FullNumerologyMap: React.FC<FullNumerologyMapProps> = ({ fullName, birthDa
     }
   };
 
+  const menuItems: { id: SectionKey, label: string, icon: React.ElementType }[] = [
+    { id: 'triangulo', label: 'Triângulo da Vida', icon: User },
+    { id: 'caminho', label: 'Seu Caminho', icon: Compass },
+    { id: 'ciclos', label: 'Ciclos Maiores', icon: Mountain },
+    { id: 'analise', label: 'Análise do Nome', icon: BarChart2 },
+  ];
+
   return (
-    <div className="flex flex-col md:flex-row gap-6">
-      {/* Sidebar Navigation */}
-      <div className="w-full md:w-64 flex-shrink-0">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden sticky top-24">
-          <div className="p-4 bg-gray-50 border-b border-gray-200">
+    <div className="flex flex-col lg:flex-row gap-6">
+      {/* Sidebar Navigation - Responsive */}
+      <div className="w-full lg:w-64 flex-shrink-0">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden sticky lg:top-24">
+          <div className="hidden lg:block p-4 bg-gray-50 border-b border-gray-200">
             <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Estudos</h4>
           </div>
-          <nav className="flex flex-col p-2 space-y-1">
-            <button 
-              onClick={() => setActiveSection('triangulo')}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeSection === 'triangulo' ? 'bg-mystic-100 text-mystic-800' : 'text-gray-600 hover:bg-gray-50'}`}
-            >
-              <User size={18} />
-              Triângulo da Vida
-            </button>
-            <button 
-              onClick={() => setActiveSection('caminho')}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeSection === 'caminho' ? 'bg-mystic-100 text-mystic-800' : 'text-gray-600 hover:bg-gray-50'}`}
-            >
-              <Compass size={18} />
-              Seu Caminho
-            </button>
-            <button 
-              onClick={() => setActiveSection('ciclos')}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeSection === 'ciclos' ? 'bg-mystic-100 text-mystic-800' : 'text-gray-600 hover:bg-gray-50'}`}
-            >
-              <Mountain size={18} />
-              Ciclos Maiores
-            </button>
-            <button 
-              onClick={() => setActiveSection('analise')}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${activeSection === 'analise' ? 'bg-mystic-100 text-mystic-800' : 'text-gray-600 hover:bg-gray-50'}`}
-            >
-              <BarChart2 size={18} />
-              Análise do Nome
-            </button>
+          
+          {/* Navigation Container */}
+          <nav className="flex lg:flex-col overflow-x-auto p-2 space-x-2 lg:space-x-0 lg:space-y-1 hide-scrollbar">
+            {menuItems.map(item => (
+              <button 
+                key={item.id}
+                onClick={() => setActiveSection(item.id)}
+                className={`flex-shrink-0 flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${activeSection === item.id ? 'bg-mystic-100 text-mystic-800' : 'text-gray-600 hover:bg-gray-50'}`}
+              >
+                <item.icon size={18} />
+                {item.label}
+              </button>
+            ))}
           </nav>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1">
+      <div className="flex-1 min-w-0">
         {renderContent()}
       </div>
     </div>

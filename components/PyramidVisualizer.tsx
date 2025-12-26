@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { getArcanoInfo } from '../data/arcanos';
-import { Share2, Check, Clock, Crown } from 'lucide-react';
+import { Share2, Check, Clock, Crown, ArrowRight } from 'lucide-react';
 import { NegativeSequence } from '../types';
 import { calculateLifeCycles } from '../utils/numerology';
 
@@ -195,35 +195,41 @@ const PyramidVisualizer: React.FC<PyramidVisualizerProps> = ({ layers, originalN
           {lifeCycles.map((cycle, idx) => {
             const arcano = getArcanoInfo(cycle.rulerNumber);
             return (
-              <div key={`cycle-${idx}`} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col items-center text-center hover:border-mystic-300 transition-colors">
-                <div className="text-sm font-bold text-gray-900 uppercase mb-1 tracking-wider bg-gray-50 px-2 py-0.5 rounded">
-                  Ciclo {cycle.cycleIndex}
-                </div>
-                <div className="text-[10px] text-gray-400 font-medium mb-3">
-                  {cycle.startAge} aos {cycle.endAge} anos
+              <div key={`cycle-${idx}`} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col hover:border-mystic-300 transition-colors">
+                
+                {/* Header: Cycle & Arcano Side-by-Side */}
+                <div className="flex justify-between items-start border-b border-gray-50 pb-2 mb-2">
+                  <div className="text-left">
+                    <div className="text-xs font-bold text-gray-900 uppercase tracking-wider">Ciclo {cycle.cycleIndex}</div>
+                    <div className="text-[10px] text-gray-400 font-medium">{cycle.startAge} - {cycle.endAge} anos</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center justify-end gap-1 text-xs font-bold text-mystic-700">
+                      <Crown size={12} className="text-gold-500" />
+                      <span>{arcano.nome}</span>
+                    </div>
+                    <div className="text-[10px] text-gray-500">Arcanjo {arcano.arcanjo}</div>
+                  </div>
                 </div>
                 
-                {/* Visual Indicators */}
-                <div className="flex items-center gap-2 mb-3">
-                   <div className="w-8 h-8 rounded-full bg-mystic-100 text-mystic-700 flex items-center justify-center font-bold text-sm" title={`Letra Regente: ${cycle.rulerChar}`}>
-                     {cycle.rulerChar}
+                {/* Body: Regentes */}
+                <div className="flex items-center justify-center gap-3 mb-3 bg-gray-50 rounded py-2">
+                   <div className="flex flex-col items-center">
+                     <span className="text-[9px] text-gray-400 uppercase font-bold">Letra</span>
+                     <div className="w-6 h-6 rounded-full bg-white border border-gray-200 text-gray-700 flex items-center justify-center font-bold text-xs">
+                       {cycle.rulerChar}
+                     </div>
                    </div>
-                   <span className="text-gray-300 text-xs">→</span>
-                   <div className="w-8 h-8 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-bold text-sm" title={`Número Regente: ${cycle.rulerNumber}`}>
-                     {cycle.rulerNumber}
+                   <ArrowRight size={12} className="text-gray-300" />
+                   <div className="flex flex-col items-center">
+                     <span className="text-[9px] text-gray-400 uppercase font-bold">Num</span>
+                     <div className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-bold text-xs">
+                       {cycle.rulerNumber}
+                     </div>
                    </div>
                 </div>
 
-                {/* Arcano Info */}
-                <div className="mb-3 w-full bg-gray-50 rounded p-2 border border-gray-100">
-                  <div className="text-[10px] uppercase font-bold text-gray-400 mb-1 flex items-center justify-center gap-1">
-                     <Crown size={10} /> Arcano {arcano.numero}
-                  </div>
-                  <div className="text-xs font-bold text-mystic-700 mb-0.5 leading-tight">{arcano.nome}</div>
-                  <div className="text-[10px] text-gray-500">Arcanjo {arcano.arcanjo}</div>
-                </div>
-                
-                <p className="text-[10px] text-gray-500 leading-tight border-t border-gray-100 pt-2 mt-auto">
+                <p className="text-[10px] text-gray-500 leading-tight text-center mt-auto">
                   {cycle.meaning}
                 </p>
               </div>

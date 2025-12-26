@@ -56,108 +56,85 @@ const App: React.FC = () => {
 
   const baseNumber = getBaseNumber();
 
+  const navItems = [
+    { id: CalculationTab.PYRAMID, label: 'Pirâmide', icon: Triangle },
+    { id: CalculationTab.FULL_MAP, label: 'Mapa', icon: Map },
+    { id: CalculationTab.CHART, label: 'Ciclos', icon: Calendar },
+    { id: CalculationTab.BIO_RHYTHM, label: 'Bio', icon: Activity },
+    { id: CalculationTab.SINASTRIA, label: 'Sinastria', icon: Heart },
+    { id: CalculationTab.SETTINGS, label: 'Config', icon: Settings },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-900 pb-20 md:pb-0">
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-900 pb-24 lg:pb-10">
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         
-        {/* Page Title */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        {/* Page Title & Global Input */}
+        <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Estúdio Numerológico</h1>
-            <p className="text-gray-500 mt-1">Análise profissional de vibrações e ciclos.</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Estúdio Numerológico</h1>
+            <p className="text-sm text-gray-500 mt-1">Análise profissional de vibrações e ciclos.</p>
           </div>
-          {/* Global Date Input for User Convenience */}
-          <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
+          {/* Global Date Input */}
+          <div className="w-full md:w-auto flex flex-col sm:flex-row gap-2 items-start sm:items-center bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
              {activeTab === CalculationTab.PYRAMID && (
                <div className="text-xs text-gray-400 px-2 italic hidden sm:block">
                  Para ciclos e mapa completo, insira a data:
                </div>
              )}
-              <label className="text-xs font-bold text-gray-500 uppercase px-2">Sua Data de Nascimento:</label>
+              <label className="text-xs font-bold text-gray-500 uppercase px-2 sm:hidden">Data de Nascimento:</label>
               <input 
                 type="date" 
                 value={birthDate}
                 onChange={(e) => setBirthDate(e.target.value)}
-                className="text-sm border-gray-300 rounded-md focus:ring-mystic-500 focus:border-mystic-500"
+                className="w-full sm:w-auto text-sm border-gray-300 rounded-md focus:ring-mystic-500 focus:border-mystic-500"
               />
             </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           
-          {/* Sidebar / Mobile Tabs */}
-          <div className="lg:col-span-3">
-             <nav className="flex lg:flex-col space-x-2 lg:space-x-0 lg:space-y-2 overflow-x-auto pb-4 lg:pb-0 hide-scrollbar">
-                <button 
-                  onClick={() => setActiveTab(CalculationTab.PYRAMID)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeTab === CalculationTab.PYRAMID ? 'bg-mystic-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                >
-                  <Triangle size={18} className={activeTab === CalculationTab.PYRAMID ? "fill-current" : ""} />
-                  Pirâmide Pitagórica
-                </button>
-                <button 
-                  onClick={() => setActiveTab(CalculationTab.FULL_MAP)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeTab === CalculationTab.FULL_MAP ? 'bg-mystic-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                >
-                  <Map size={18} />
-                  Mapa Completo
-                </button>
-                <button 
-                  onClick={() => setActiveTab(CalculationTab.CHART)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeTab === CalculationTab.CHART ? 'bg-mystic-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                >
-                  <Calendar size={18} />
-                  Ciclos de Tempo
-                </button>
-                <button 
-                  onClick={() => setActiveTab(CalculationTab.BIO_RHYTHM)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeTab === CalculationTab.BIO_RHYTHM ? 'bg-mystic-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                >
-                  <Activity size={18} />
-                  Bio-Ritmo
-                </button>
-                <button 
-                  onClick={() => setActiveTab(CalculationTab.SINASTRIA)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeTab === CalculationTab.SINASTRIA ? 'bg-mystic-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                >
-                  <Heart size={18} />
-                  Sinastria
-                </button>
-                <button 
-                  onClick={() => setActiveTab(CalculationTab.SETTINGS)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeTab === CalculationTab.SETTINGS ? 'bg-mystic-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
-                >
-                  <Settings size={18} />
-                  Configurações
-                </button>
+          {/* Desktop Sidebar (Hidden on Mobile) */}
+          <div className="hidden lg:block w-64 flex-shrink-0">
+             <nav className="space-y-2 sticky top-24">
+                {navItems.map(item => (
+                  <button 
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === item.id ? 'bg-mystic-600 text-white shadow-md transform scale-[1.02]' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
+                  >
+                    <item.icon size={18} className={activeTab === CalculationTab.PYRAMID && item.id === CalculationTab.PYRAMID ? "fill-current" : ""} />
+                    {item.label}
+                  </button>
+                ))}
              </nav>
           </div>
 
           {/* Main Content Area */}
-          <div className="lg:col-span-9 space-y-6">
+          <div className="flex-1 space-y-6 min-w-0">
             
             {activeTab === CalculationTab.PYRAMID && (
               <>
                 {/* Input Card */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nome Completo (Conforme Certidão)</label>
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <input 
                       type="text" 
                       value={inputName}
                       onChange={(e) => setInputName(e.target.value)}
                       placeholder="Ex: Ana Maria Silva"
-                      className="flex-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-mystic-500 focus:ring-mystic-500 sm:text-sm p-3 border"
+                      className="flex-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-mystic-500 focus:ring-mystic-500 text-base p-3 border"
                       onKeyDown={(e) => e.key === 'Enter' && handleCalculatePyramid()}
                     />
                     <button 
                       onClick={handleCalculatePyramid}
-                      className="bg-mystic-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-mystic-700 transition-colors flex items-center gap-2"
+                      className="bg-mystic-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-mystic-700 transition-colors flex items-center justify-center gap-2"
                     >
                       <Search size={18} />
-                      <span className="hidden sm:inline">Analisar</span>
+                      <span>Analisar</span>
                     </button>
                   </div>
                   <p className="text-xs text-gray-400 mt-2">A análise utiliza a tabela pitagórica (A=1, B=2...) e redução a 9.</p>
@@ -167,7 +144,7 @@ const App: React.FC = () => {
                 {calculatedLayers.length > 0 && (
                   <div className="animate-fade-in space-y-6">
                     
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
                       <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
                         <Triangle className="text-mystic-600 fill-current rotate-180" size={20} />
                         Pirâmide Invertida
@@ -217,7 +194,7 @@ const App: React.FC = () => {
                 )}
                  
                  {calculatedLayers.length === 0 && (
-                   <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-xl">
+                   <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-xl bg-white/50">
                       <Triangle className="mx-auto h-12 w-12 text-gray-300" />
                       <h3 className="mt-2 text-sm font-medium text-gray-900">Nenhuma análise gerada</h3>
                       <p className="mt-1 text-sm text-gray-500">Digite um nome acima para gerar a Pirâmide Pitagórica.</p>
@@ -253,6 +230,25 @@ const App: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation (Fixed Footer) */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 lg:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe">
+        <nav className="flex items-center justify-between px-2 py-2 overflow-x-auto hide-scrollbar">
+           {navItems.map(item => (
+              <button 
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`flex flex-col items-center justify-center min-w-[4rem] px-2 py-1 rounded-lg transition-all active:scale-95 ${activeTab === item.id ? 'text-mystic-600' : 'text-gray-400 hover:text-gray-600'}`}
+              >
+                <div className={`p-1.5 rounded-full mb-1 transition-colors ${activeTab === item.id ? 'bg-mystic-100' : 'bg-transparent'}`}>
+                   <item.icon size={20} className={activeTab === CalculationTab.PYRAMID && item.id === CalculationTab.PYRAMID ? "fill-current" : ""} />
+                </div>
+                <span className={`text-[10px] font-medium truncate max-w-full ${activeTab === item.id ? 'font-bold' : ''}`}>{item.label}</span>
+              </button>
+           ))}
+        </nav>
+      </div>
+
     </div>
   );
 };

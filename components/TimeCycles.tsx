@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { calculatePersonalYear, calculatePersonalMonth, calculatePersonalDay } from '../utils/numerology';
-import { Calendar, Sun, Moon, Info, Target, ShieldAlert, Sparkles } from 'lucide-react';
+import { Calendar, Sun, Moon, Info, Target, ShieldAlert, Sparkles, Share2, Loader2 } from 'lucide-react';
+// @ts-ignore
+import { toPng } from 'html-to-image';
 
 interface TimeCyclesProps {
   birthDate: string;
@@ -14,6 +16,9 @@ interface CycleDetail {
 }
 
 const TimeCycles: React.FC<TimeCyclesProps> = ({ birthDate }) => {
+  const dayCardRef = useRef<HTMLDivElement>(null);
+  const [isSharing, setIsSharing] = useState(false);
+
   if (!birthDate) {
     return (
       <div className="p-12 text-center bg-white rounded-xl border border-gray-200 shadow-sm">
@@ -31,6 +36,44 @@ const TimeCycles: React.FC<TimeCyclesProps> = ({ birthDate }) => {
   const personalYear = calculatePersonalYear(birthDate, currentYear);
   const personalMonth = calculatePersonalMonth(personalYear, currentMonth);
   const personalDay = calculatePersonalDay(personalMonth, currentDay);
+
+  const handleShareDay = async () => {
+    if (!dayCardRef.current) return;
+    
+    setIsSharing(true);
+    try {
+      const dataUrl = await toPng(dayCardRef.current, {
+        cacheBust: true, 
+        backgroundColor: '#ffffff',
+        pixelRatio: 2,
+        filter: (node: HTMLElement) => {
+            return !node.classList?.contains('no-share-capture');
+        }
+      });
+      
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], 'vibracao-dia.png', { type: 'image/png' });
+
+      // Check for native share support
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: 'NumeraSaaS - Minha Vibração',
+          text: `Hoje meu dia é regido pelo número ${personalDay}: ${DAY_MEANINGS[personalDay]}`,
+          files: [file],
+        });
+      } else {
+        // Fallback: Download
+        const link = document.createElement('a');
+        link.download = 'vibracao-dia.png';
+        link.href = dataUrl;
+        link.click();
+      }
+    } catch (err) {
+      console.error('Failed to share card', err);
+    } finally {
+      setIsSharing(false);
+    }
+  };
 
   // --- Data Definitions ---
 
@@ -198,7 +241,17 @@ const TimeCycles: React.FC<TimeCyclesProps> = ({ birthDate }) => {
         </div>
 
         {/* Day Card */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gold-200 relative overflow-hidden group">
+        <div ref={dayCardRef} className="bg-white rounded-xl p-6 shadow-sm border border-gold-200 relative overflow-hidden group">
+          {/* Share Button */}
+          <button 
+            onClick={handleShareDay}
+            disabled={isSharing}
+            className="no-share-capture absolute top-4 right-4 p-2 bg-white/80 hover:bg-gold-100 text-gold-600 rounded-full shadow-sm border border-gold-200 transition-all z-20 cursor-pointer"
+            title="Compartilhar Card"
+          >
+            {isSharing ? <Loader2 size={16} className="animate-spin text-gold-600" /> : <Share2 size={16} />}
+          </button>
+
           <div className="absolute right-0 top-0 w-20 h-20 bg-gold-50 rounded-bl-full -mr-4 -mt-4"></div>
           <div className="relative z-10 h-full flex flex-col">
             <div className="flex items-center gap-2 mb-4 text-gold-600 text-xs font-bold uppercase tracking-wide">
@@ -215,6 +268,9 @@ const TimeCycles: React.FC<TimeCyclesProps> = ({ birthDate }) => {
               <p className="text-sm font-medium text-gold-800 italic text-center">
                 "{DAY_MEANINGS[personalDay]}"
               </p>
+            </div>
+            <div className="mt-4 text-[10px] text-gray-400 text-center opacity-0 group-hover:opacity-100 transition-opacity">
+              NumeraSaaS
             </div>
           </div>
         </div>
